@@ -1,0 +1,95 @@
+{
+  "slots": [
+    {
+      "date": "2026-05-27",
+      "time": "10:00 AM",
+      "booked": false,
+      "blocked": false
+    },
+    {
+      "date": "2026-05-30",
+      "time": "10:00 AM",
+      "booked": true,
+      "blocked": false,
+      "bookingId": "CCF586A8",
+      "name": "sdfghj",
+      "whatsapp": "6262626262",
+      "totalRate": 1300,
+      "advancePaid": 500,
+      "balanceDue": 800
+    }
+  ],
+  "bookings": [
+    {
+      "id": "42F5F6B2",
+      "date": "2026-05-26",
+      "time": "8:00 AM",
+      "name": "sa",
+      "whatsapp": "65465654",
+      "totalRate": 1000,
+      "advancePaid": 200,
+      "balanceDue": 800,
+      "createdAt": "2026-05-26T12:13:31.402Z"
+    },
+    {
+      "id": "47A576CA",
+      "date": "2026-05-26",
+      "time": "6:00 AM",
+      "name": "kavi",
+      "whatsapp": "8778727544",
+      "totalRate": 100,
+      "advancePaid": 20,
+      "balanceDue": 80,
+      "createdAt": "2026-05-26T16:20:59.472Z"
+    },
+    {
+      "id": "09A4348D",
+      "date": "2026-05-26",
+      "time": "7:00 AM",
+      "name": "kk",
+      "whatsapp": "21321232123",
+      "totalRate": 100,
+      "advancePaid": 20,
+      "balanceDue": 80,
+      "createdAt": "2026-05-26T16:22:30.615Z"
+    },
+    {
+      "id": "3BF32AB0",
+      "date": "2026-05-26",
+      "time": "10:00 AM",
+      "name": "jjk",
+      "whatsapp": "8778727544",
+      "totalRate": 1000,
+      "advancePaid": 500,
+      "balanceDue": 500,
+      "createdAt": "2026-05-26T17:28:23.322Z"
+    },
+    {
+      "id": "57DFBD67",
+      "date": "2026-05-27",
+      "time": "9:00 AM",
+      "name": "dsfsaf",
+      "whatsapp": "9944268954",
+      "totalRate": 1000,
+      "advancePaid": 500,
+      "balanceDue": 500,
+      "createdAt": "2026-05-27T01:03:34.003Z"
+    },
+    {
+      "id": "CCF586A8",
+      "date": "2026-05-30",
+      "time": "10:00 AM",
+      "name": "sdfghj",
+      "whatsapp": "6262626262",
+      "totalRate": 1300,
+      "advancePaid": 500,
+      "balanceDue": 800,
+      "createdAt": "2026-05-27T01:09:01.441Z"
+    }
+  ],
+  "cancellations": [],
+  "admin": {
+    "username": "admin",
+    "password": "admin123"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "weekdayRate": 1000,
+  "weekendRate": 1300,
+  "advanceType": "fixed",
+  "advanceValue": 500
+}
