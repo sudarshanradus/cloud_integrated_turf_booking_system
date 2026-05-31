@@ -8,6 +8,9 @@ import BookingSummary from '../components/booking/BookingSummary'
 import PaymentModal from '../components/payment/PaymentModal'
 import SuccessModal from '../components/confirmation/SuccessModal'
 import { ArrowLeft, AlertCircle, Sun, Calendar } from 'lucide-react'
+import { API_BASE_URL } from '../config';
+// --- CONFIGURATION ---
+// const API_BASE_URL = "http://40.192.37.27:3001";
 
 function toLocalDateStr(date = new Date()) {
   return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`
@@ -32,7 +35,7 @@ export default function BookingPage() {
   useEffect(() => {
     setSelectedSlot(null)
     setError('')
-    fetch(`/api/slots?date=${date}`)
+    fetch(`${API_BASE_URL}/api/slots?date=${date}`)
       .then(r => r.json())
       .then(d => setSlots(d.slots || []))
       .catch(() => setError('Could not load slots. Please check your connection.'))
@@ -40,7 +43,7 @@ export default function BookingPage() {
 
   // Fetch pricing
   useEffect(() => {
-    fetch(`/api/pricing?date=${date}`)
+    fetch(`${API_BASE_URL}/api/pricing?date=${date}`)
       .then(r => r.json())
       .then(setPricing)
       .catch(() => {})
@@ -50,7 +53,7 @@ export default function BookingPage() {
     setLoading(true)
     setError('')
     try {
-      const res = await fetch('/api/book', {
+      const res = await fetch(`${API_BASE_URL}/api/book`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ date, time: selectedSlot.time, name, whatsapp }),

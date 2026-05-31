@@ -10,7 +10,10 @@ import BookingsTable from '../components/admin/BookingsTable'
 import SlotManager from '../components/admin/SlotManager'
 import PricingManager from '../components/admin/PricingManager'
 import { MOCK_BOOKINGS } from '../data/mockData'
+import { API_BASE_URL } from '../config';
 
+// --- CONFIGURATION ---
+// const API_BASE_URL = "http://40.192.37.27:3001";
 const TOKEN = 'admin-token-123'
 
 const NAV = [
@@ -37,7 +40,11 @@ export default function AdminPage() {
     e.preventDefault()
     setLoginError('')
     try {
-      const res = await fetch('/api/admin/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, password }) })
+      const res = await fetch(`${API_BASE_URL}/api/admin/login`, { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' }, 
+        body: JSON.stringify({ username, password }) 
+      })
       const d = await res.json()
       if (!res.ok) throw new Error(d.error)
       setLoggedIn(true)
@@ -46,8 +53,15 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (!loggedIn) return
-    fetch(`/api/admin/bookings?token=${TOKEN}`).then(r => r.json()).then(d => setBookings(Array.isArray(d) ? d : MOCK_BOOKINGS)).catch(() => setBookings(MOCK_BOOKINGS))
-    fetch(`/api/admin/cancellations?token=${TOKEN}`).then(r => r.json()).then(d => setCancellations(Array.isArray(d) ? d : [])).catch(() => {})
+    fetch(`${API_BASE_URL}/api/admin/bookings?token=${TOKEN}`)
+      .then(r => r.json())
+      .then(d => setBookings(Array.isArray(d) ? d : MOCK_BOOKINGS))
+      .catch(() => setBookings(MOCK_BOOKINGS))
+    
+    fetch(`${API_BASE_URL}/api/admin/cancellations?token=${TOKEN}`)
+      .then(r => r.json())
+      .then(d => setCancellations(Array.isArray(d) ? d : []))
+      .catch(() => {})
   }, [loggedIn])
 
   const todayStr = new Date().toISOString().split('T')[0]
@@ -99,12 +113,9 @@ export default function AdminPage() {
   // ─── Dashboard ───
   return (
     <div className="min-h-screen bg-[#080c10] flex">
-      {/* Sidebar overlay */}
       {sidebarOpen && <div className="fixed inset-0 bg-black/60 z-30 lg:hidden" onClick={() => setSidebarOpen(false)} />}
 
-      {/* Sidebar */}
       <aside className={`fixed top-0 left-0 h-full w-64 glass-dark border-r border-white/6 z-40 flex flex-col transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:static lg:z-auto`}>
-        {/* Logo */}
         <div className="p-5 border-b border-white/6 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center">
@@ -118,7 +129,6 @@ export default function AdminPage() {
           <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-slate-500"><X size={18} /></button>
         </div>
 
-        {/* Nav */}
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           {NAV.map(({ id, label, icon: Icon }) => (
             <button key={id} onClick={() => { setActiveTab(id); setSidebarOpen(false) }}
@@ -130,7 +140,6 @@ export default function AdminPage() {
           ))}
         </nav>
 
-        {/* Footer */}
         <div className="p-4 border-t border-white/6 space-y-2">
           <button onClick={() => navigate('/')} className="sidebar-link w-full text-emerald-600 hover:text-emerald-400">
             <Zap size={15} /> View Arena Site
@@ -141,9 +150,7 @@ export default function AdminPage() {
         </div>
       </aside>
 
-      {/* Main */}
       <div className="flex-1 min-w-0 flex flex-col">
-        {/* Top bar */}
         <header className="glass-dark border-b border-white/6 px-4 sm:px-6 py-4 flex items-center gap-4 sticky top-0 z-20">
           <button onClick={() => setSidebarOpen(true)} className="lg:hidden w-9 h-9 glass rounded-xl flex items-center justify-center text-slate-400">
             <Menu size={18} />
@@ -160,9 +167,7 @@ export default function AdminPage() {
           </div>
         </header>
 
-        {/* Content */}
         <main className="flex-1 p-4 sm:p-6 overflow-auto">
-          {/* ── DASHBOARD ── */}
           {activeTab === 'dashboard' && (
             <div className="space-y-6">
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -188,7 +193,6 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Recent activity */}
               <div className="glass rounded-2xl p-5">
                 <h3 className="text-white font-semibold text-sm mb-4">Recent Activity</h3>
                 <div className="space-y-3">
@@ -209,10 +213,8 @@ export default function AdminPage() {
             </div>
           )}
 
-          {/* ── SCHEDULE ── */}
           {activeTab === 'schedule' && <SlotManager />}
 
-          {/* ── BOOKINGS ── */}
           {activeTab === 'bookings' && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
@@ -225,7 +227,6 @@ export default function AdminPage() {
             </div>
           )}
 
-          {/* ── CANCELLATIONS ── */}
           {activeTab === 'cancellations' && (
             <div className="glass rounded-2xl overflow-hidden">
               <div className="p-5 border-b border-white/6">
@@ -264,7 +265,11 @@ export default function AdminPage() {
                         <td className="px-5 py-4">
                           <button
                             onClick={async () => {
-                              const res = await fetch('/api/admin/refund-override', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({token:TOKEN,bookingId:c.bookingId,refundIssued:!c.refundIssued}) })
+                              const res = await fetch(`${API_BASE_URL}/api/admin/refund-override`, { 
+                                method:'POST', 
+                                headers:{'Content-Type':'application/json'}, 
+                                body:JSON.stringify({token:TOKEN,bookingId:c.bookingId,refundIssued:!c.refundIssued}) 
+                              })
                               const d = await res.json()
                               if (res.ok) setCancellations(p => p.map(x => x.bookingId===c.bookingId ? {...x,refundIssued:d.refundIssued} : x))
                             }}
@@ -281,10 +286,8 @@ export default function AdminPage() {
             </div>
           )}
 
-          {/* ── PRICING ── */}
           {activeTab === 'pricing' && <PricingManager />}
 
-          {/* ── SETTINGS ── */}
           {activeTab === 'settings' && (
             <div className="max-w-lg space-y-5">
               <div className="glass rounded-2xl p-6">
@@ -297,16 +300,6 @@ export default function AdminPage() {
                     </div>
                   ))}
                   <button className="btn-primary py-3 px-6 text-sm">Save Changes</button>
-                </div>
-              </div>
-              <div className="glass rounded-2xl p-6">
-                <h3 className="text-white font-semibold mb-1">Change Password</h3>
-                <p className="text-slate-500 text-xs mb-4">Update your admin credentials</p>
-                <div className="space-y-3">
-                  {['Current Password','New Password','Confirm New Password'].map(l=>(
-                    <input key={l} type="password" placeholder={l} className="input-field text-sm" />
-                  ))}
-                  <button className="btn-ghost py-3 px-6 text-sm w-full">Update Password</button>
                 </div>
               </div>
             </div>

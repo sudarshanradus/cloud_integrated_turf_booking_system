@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Save, Info } from 'lucide-react'
-
+import { API_BASE_URL } from '../../config';
+// --- CONFIGURATION ---
+// const API_BASE_URL = "http://40.192.37.27:3001";
 const TOKEN = 'admin-token-123'
 
 export default function PricingManager() {
@@ -9,21 +11,28 @@ export default function PricingManager() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    fetch(`/api/admin/settings?token=${TOKEN}`).then(r => r.json()).then(setSettings).catch(() => {})
+    // Updated to use EC2 IP
+    fetch(`${API_BASE_URL}/api/admin/settings?token=${TOKEN}`)
+      .then(r => r.json())
+      .then(setSettings)
+      .catch(() => {})
   }, [])
 
   const save = async () => {
     setLoading(true)
     try {
-      const res = await fetch('/api/admin/settings', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
+      // Updated to use EC2 IP
+      const res = await fetch(`${API_BASE_URL}/api/admin/settings`, {
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token: TOKEN, ...settings }),
       })
       const d = await res.json()
       if (res.ok) setMsg({ type: 'success', text: 'Settings saved successfully!' })
       else setMsg({ type: 'error', text: d.error })
-    } catch { setMsg({ type: 'error', text: 'Failed to save' }) }
-    finally {
+    } catch { 
+      setMsg({ type: 'error', text: 'Failed to save' }) 
+    } finally {
       setLoading(false)
       setTimeout(() => setMsg(null), 3000)
     }

@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { Home, Download, MessageCircle, X, Calendar, Clock, CreditCard, Wallet } from 'lucide-react'
-
+import { useEffect, useRef } from 'react' //new line added
 export default function SuccessModal({ bookingId, pricing, date, time, name, onClose }) {
   const navigate = useNavigate()
   const overlayRef = useRef()

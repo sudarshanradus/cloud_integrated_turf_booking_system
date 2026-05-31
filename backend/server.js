@@ -41,7 +41,14 @@ function parseSlotDateTime(dateStr, timeStr) {
 }
 
 const app = express();
-app.use(cors());
+// app.use(cors());
+// Replace this:
+// app.use(cors());
+
+// With this (replace with your actual S3 Website URL):
+app.use(cors({
+  origin: 'http://turf-booking-2026.s3-website.ap-south-2.amazonaws.com' 
+}));
 app.use(express.json());
 
 app.get("/api/slots", async (req, res) => {

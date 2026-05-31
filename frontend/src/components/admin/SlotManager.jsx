@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Lock, Unlock, Calendar, RefreshCw, Circle, Bookmark, Check } from 'lucide-react'
-
+import { API_BASE_URL } from '../../config';
+// --- CONFIGURATION ---
+// const API_BASE_URL = "http://40.192.37.27:3001";
 const TOKEN = 'admin-token-123'
+
 const SLOT_TIMES = ['6:00 AM','7:00 AM','8:00 AM','9:00 AM','10:00 AM','11:00 AM','12:00 PM','1:00 PM','2:00 PM','3:00 PM','4:00 PM','5:00 PM','6:00 PM','7:00 PM','8:00 PM','9:00 PM','10:00 PM','11:00 PM']
 
 export default function SlotManager() {
@@ -13,7 +16,8 @@ export default function SlotManager() {
 
   const load = () => {
     setLoading(true)
-    fetch(`/api/admin/slots?token=${TOKEN}&date=${date}`)
+    // Updated to use EC2 IP
+    fetch(`${API_BASE_URL}/api/admin/slots?token=${TOKEN}&date=${date}`)
       .then(r => r.json())
       .then(d => setSlots(d.slots || []))
       .catch(() => setMsg({ type: 'error', text: 'Failed to load slots' }))
@@ -28,22 +32,38 @@ export default function SlotManager() {
   }
 
   const block = async (time) => {
-    const res = await fetch('/api/admin/block', { method: 'POST', headers: { 'Content-Type':'application/json' }, body: JSON.stringify({ token: TOKEN, date, time }) })
+    // Updated to use EC2 IP
+    const res = await fetch(`${API_BASE_URL}/api/admin/block`, { 
+      method: 'POST', 
+      headers: { 'Content-Type':'application/json' }, 
+      body: JSON.stringify({ token: TOKEN, date, time }) 
+    })
     const d = await res.json()
-    if (res.ok) { setSlots(p => p.map(s => s.time === time ? { ...s, blocked: true } : s)); flash('success', `Blocked ${time}`) }
+    if (res.ok) { 
+      setSlots(p => p.map(s => s.time === time ? { ...s, blocked: true } : s))
+      flash('success', `Blocked ${time}`) 
+    }
     else flash('error', d.error)
   }
 
   const unblock = async (time) => {
-    const res = await fetch('/api/admin/unblock', { method: 'POST', headers: { 'Content-Type':'application/json' }, body: JSON.stringify({ token: TOKEN, date, time }) })
+    // Updated to use EC2 IP
+    const res = await fetch(`${API_BASE_URL}/api/admin/unblock`, { 
+      method: 'POST', 
+      headers: { 'Content-Type':'application/json' }, 
+      body: JSON.stringify({ token: TOKEN, date, time }) 
+    })
     const d = await res.json()
-    if (res.ok) { setSlots(p => p.map(s => s.time === time ? { ...s, blocked: false } : s)); flash('success', `Unblocked ${time}`) }
+    if (res.ok) { 
+      setSlots(p => p.map(s => s.time === time ? { ...s, blocked: false } : s))
+      flash('success', `Unblocked ${time}`) 
+    }
     else flash('error', d.error)
   }
 
   const booked = slots.filter(s => s.booked).length
   const blocked = slots.filter(s => s.blocked).length
-  const available = 18 - booked - blocked
+  const available = SLOT_TIMES.length - booked - blocked
 
   return (
     <div className="space-y-5">

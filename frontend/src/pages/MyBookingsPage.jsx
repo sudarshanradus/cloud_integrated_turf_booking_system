@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/layout/Navbar'
 import CancelModal from '../components/confirmation/CancelModal'
 import { ArrowLeft, Search, Calendar, Clock, Wallet, Phone, AlertCircle, CheckCircle2, X } from 'lucide-react'
-
+import { API_BASE_URL } from '../config';
+// --- CONFIGURATION ---
+// const API_BASE_URL = "http://40.192.37.27:3001";
 
 export default function MyBookingsPage() {
   const navigate = useNavigate()
@@ -20,7 +22,8 @@ export default function MyBookingsPage() {
     if (!phone.trim()) return
     setLoading(true); setError(''); setCancelResult(null)
     try {
-      const res = await fetch(`/api/my-bookings?phone=${encodeURIComponent(phone.trim())}`)
+      // Updated to use EC2 IP
+      const res = await fetch(`${API_BASE_URL}/api/my-bookings?phone=${encodeURIComponent(phone.trim())}`)
       const data = await res.json()
       if (!res.ok) throw new Error(data.error)
       setBookings(data)
@@ -33,7 +36,12 @@ export default function MyBookingsPage() {
   const handleCancel = async (bookingId) => {
     setCancelLoading(true)
     try {
-      const res = await fetch('/api/cancel', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ bookingId }) })
+      // Updated to use EC2 IP
+      const res = await fetch(`${API_BASE_URL}/api/cancel`, { 
+        method:'POST', 
+        headers:{'Content-Type':'application/json'}, 
+        body:JSON.stringify({ bookingId }) 
+      })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error)
       setCancelResult(data)
@@ -143,7 +151,7 @@ export default function MyBookingsPage() {
             </div>
           )}
 
-          {/* Empty */}
+          {/* Empty State */}
           {bookings && bookings.length === 0 && !error && (
             <div className="glass rounded-2xl p-12 text-center text-slate-600">
               <div className="w-16 h-16 mx-auto glass-green rounded-2xl flex items-center justify-center mb-4">
