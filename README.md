@@ -21,3 +21,6 @@ A full-stack booking application built with React, Node.js, and PostgreSQL.
 ## 📡 Environment Variables
 To run this project, you will need to add the following environment variables to your .env file:
 `VITE_API_BASE_URL` = Your Backend IP/URL
+
+## If you want local run
+Just install you repository and clicka the run.bat file
